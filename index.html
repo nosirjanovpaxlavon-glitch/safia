@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2D1E17">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Cafe Safia — Zamonaviy QR-Menyu va Kafe</title>
+  
+  <!-- Favicon & Fonts -->
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- QRCode.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Autumn Leaves Effect Container -->
+  <div id="autumnLeavesContainer" class="autumn-leaves-container"></div>
+
+  <!-- Top Notification Bar -->
+  <div class="top-announcement">
+    <div class="container announcement-inner">
+      <span><i class="fa-solid fa-sparkles"></i> <strong>Cafe Safia</strong>ga xush kelibsiz! Yangi uzilgan mevali salatlar va shinam muhit.</span>
+      <div class="wifi-info">
+        <i class="fa-solid fa-wifi"></i> Wi-Fi: <span>Safia_Guest</span> (kod: <span>safia2026</span>)
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-container">
+      <div class="brand">
+        <div class="logo-icon">
+          <img src="logo.png" alt="Cafe Safia" class="site-logo-img">
+        </div>
+        <div class="brand-text">
+          <h1>Cafe Safia</h1>
+          <span class="tagline">Lazzat & Shirin Lahzalar</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- Theme Switcher Button -->
+        <button class="btn-action btn-theme" onclick="cycleTheme()" id="themeBtn" title="Rejimni almashtirish (Kunduzgi / Kuzgi / Tungi)">
+          <i class="fa-solid fa-sun" id="themeIcon"></i>
+          <span class="btn-text" id="themeText">Kunduzgi</span>
+        </button>
+
+        <!-- Call Waiter Button -->
+        <button class="btn-action btn-waiter" onclick="callWaiterPrompt()" title="Ofitsiantni chaqirish">
+          <i class="fa-solid fa-bell-concierge"></i>
+          <span class="btn-text">Ofitsiant</span>
+        </button>
+
+        <!-- QR Code Generator Button -->
+        <button class="btn-action btn-qr" onclick="openQrModal()" title="Stol QR Kodini ko'rish / chiqarish">
+          <i class="fa-solid fa-qrcode"></i>
+          <span class="btn-text">QR Kod</span>
+        </button>
+
+        <!-- Admin Panel Button -->
+        <button class="btn-action btn-admin" onclick="openAdminPrompt()" title="Admin Boshqaruv Paneli">
+          <i class="fa-solid fa-gear"></i>
+          <span class="btn-text">Admin</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button class="btn-action btn-cart" onclick="openCartModal()" id="cartBtn">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="cart-badge" id="cartCount">0</span>
+          <span class="btn-text cart-total-text" id="cartHeaderTotal">0 so'm</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-card">
+        <div class="hero-content">
+          <span class="hero-chip"><i class="fa-solid fa-fire"></i> Mavsum yangiligi</span>
+          <h2>Tabiiy Mevali Salatlar, Shirinlik & Fast Food</h2>
+          <p>Yangi qulupnayli va mix mevali salatlar, shirinliklar, muzdek ichimliklar va tezkor qarsildoq fast foodlar!</p>
+          
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="searchInput" placeholder="Salat, burger, kofe, shirinlik qidirish (masalan: qulupnay, mix, burger...)">
+            <button class="clear-search" id="clearSearch" onclick="clearSearch()"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+
+        <div class="hero-highlights">
+          <div class="highlight-item">
+            <div class="hi-icon"><i class="fa-solid fa-strawberry" style="color: #ff4757;"></i></div>
+            <div>
+              <strong>100% Yangi</strong>
+              <span>Tabiiy mevalar</span>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="hi-icon"><i class="fa-solid fa-bolt" style="color: #ffa502;"></i></div>
+            <div>
+              <strong>Tez Tayyorlanadi</strong>
+              <span>10-15 daqiqa</span>
+            </div>
+          </div>
+          <div class="highlight-item">
+            <div class="hi-icon"><i class="fa-solid fa-mobile-screen-button" style="color: #2ed573;"></i></div>
+            <div>
+              <strong>QR Buyurtma</strong>
+              <span>Telefon orqali</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Section -->
+  <section class="categories-section sticky-cats" id="categoriesSection">
+    <div class="container">
+      <div class="category-tabs" id="categoryTabs">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Main Menu Grid Section -->
+  <main class="menu-section">
+    <div class="container">
+      <div class="section-header-row">
+        <div>
+          <h3 class="section-title" id="sectionHeading">Barcha Taomlar</h3>
+          <p class="section-subtitle" id="sectionCount">20 dan ortiq lazzatli taomlar</p>
+        </div>
+        <div class="view-toggles">
+          <button class="toggle-btn active" id="gridViewBtn" onclick="setViewMode('grid')" title="Katta kartalar"><i class="fa-solid fa-grip"></i></button>
+          <button class="toggle-btn" id="compactViewBtn" onclick="setViewMode('compact')" title="Ixcham ro'yxat"><i class="fa-solid fa-list"></i></button>
+        </div>
+      </div>
+
+      <div class="menu-grid" id="menuGrid">
+        <!-- Menu cards injected here via JS -->
+      </div>
+
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <i class="fa-solid fa-bowl-food empty-icon"></i>
+        <h4>Hech narsa topilmadi</h4>
+        <p>Boshqa so'z bilan qidirib ko'ring yoki filtrlarni tozalang.</p>
+        <button class="btn btn-outline" onclick="resetFilters()">Barcha menyuni ko'rish</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Mobile Cart Bar -->
+  <div class="mobile-cart-float" id="mobileCartFloat" onclick="openCartModal()">
+    <div class="m-cart-left">
+      <span class="m-cart-count" id="mCartCount">0 taom</span>
+      <span class="m-cart-sum" id="mCartSum">0 so'm</span>
+    </div>
+    <div class="m-cart-right">
+      <span>Savatga o'tish</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </div>
+  </div>
+
+  <!-- MODAL: Product Details -->
+  <div class="modal-overlay" id="productModal" onclick="closeOnOutside(event, 'productModal')">
+    <div class="modal-sheet">
+      <button class="modal-close" onclick="closeModal('productModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="product-modal-body" id="productModalBody">
+        <!-- Dynamic product details -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Cart & Order -->
+  <div class="modal-overlay" id="cartModal" onclick="closeOnOutside(event, 'cartModal')">
+    <div class="modal-sheet modal-cart-sheet">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3><i class="fa-solid fa-basket-shopping"></i> Sizning Buyurtmangiz</h3>
+          <span class="cart-items-count" id="cartItemsSubtitle">0 ta taom</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('cartModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="modal-cart-body" id="cartModalBody">
+        <!-- Cart list or empty state -->
+      </div>
+
+      <div class="modal-cart-footer" id="cartModalFooter">
+        <!-- Cart summary and checkout -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: QR Code Generator & Welcome -->
+  <div class="modal-overlay" id="qrModal" onclick="closeOnOutside(event, 'qrModal')">
+    <div class="modal-sheet modal-qr-sheet">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3><i class="fa-solid fa-qrcode"></i> Cafe Safia — Smart QR Menyu</h3>
+          <span>Smartfonda menyuni ochish va buyurtma berish</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('qrModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="qr-modal-body">
+        <div class="qr-welcome-banner">
+          <i class="fa-solid fa-mobile-screen-button"></i>
+          <div>
+            <strong>Smartfoningiz orqali menyuni oching!</strong>
+            <p style="margin: 0; font-size: 12px; opacity: 0.9;">Kamerani QR-kodga qarating va taomlarni tanlang</p>
+          </div>
+        </div>
+
+        <div class="qr-card-preview" id="qrPrintArea">
+          <div class="qr-cafe-badge">
+            <img src="logo.png" alt="Cafe Safia" class="qr-logo-img"> Cafe Safia
+          </div>
+          <div class="qr-box-wrap">
+            <div id="qrcodeCanvas"></div>
+          </div>
+          <h4 id="qrCardTableTitle">Cafe Safia Menyu</h4>
+          <p class="qr-hint"><i class="fa-solid fa-camera"></i> Kamerani QR kodga qarating va menyuni oching</p>
+          <div class="qr-wifi-tag">Wi-Fi: <strong>Safia_Guest</strong> | Kod: <strong>safia2026</strong></div>
+        </div>
+
+        <div class="qr-actions-row">
+          <button class="btn btn-primary" onclick="printQrCard()"><i class="fa-solid fa-print"></i> QR Kodni Chop Etish</button>
+          <button class="btn btn-outline" onclick="copyMenuLink()"><i class="fa-solid fa-link"></i> Havolani Nusxalash</button>
+          <button class="btn btn-outline" onclick="closeModal('qrModal')" style="background: #F4EFEB;"><i class="fa-solid fa-arrow-right"></i> Menyuga o'tish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Call Waiter -->
+  <div class="modal-overlay" id="waiterModal" onclick="closeOnOutside(event, 'waiterModal')">
+    <div class="modal-sheet modal-waiter-sheet">
+      <button class="modal-close" onclick="closeModal('waiterModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="waiter-modal-content">
+        <div class="waiter-icon-circle">
+          <i class="fa-solid fa-bell-concierge"></i>
+        </div>
+        <h3>Ofitsiantni chaqirish</h3>
+        <p>Cafe Safia xodimlariga qanday yordam kerak?</p>
+        
+        <div class="waiter-options">
+          <button class="waiter-opt-btn" onclick="sendWaiterCall('Menyu kerak')"><i class="fa-solid fa-book-open"></i> Menyu kerak</button>
+          <button class="waiter-opt-btn" onclick="sendWaiterCall('Hisob / Chek')"><i class="fa-solid fa-receipt"></i> Hisob / Chek</button>
+          <button class="waiter-opt-btn" onclick="sendWaiterCall('Xizmat ko\'rsatish')"><i class="fa-solid fa-hands-helping"></i> Xizmat ko'rsatish</button>
+          <button class="waiter-opt-btn" onclick="sendWaiterCall('Ofitsiant kerak')"><i class="fa-solid fa-hand"></i> Shunchaki chaqirish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Order Success Receipt -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-sheet modal-success-sheet">
+      <div class="success-icon-wrap">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <h3>Buyurtmangiz qabul qilindi!</h3>
+      <p>Cafe Safia oshpazlari taomingizni mehr bilan tayyorlashni boshladi.</p>
+      
+      <div class="receipt-box" id="receiptBox">
+        <!-- Receipt details -->
+      </div>
+
+      <div class="success-actions">
+        <button class="btn btn-primary" onclick="closeModal('successModal')">Tushundim, rahmat!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Admin Login -->
+  <div class="modal-overlay" id="adminLoginModal" onclick="closeOnOutside(event, 'adminLoginModal')">
+    <div class="modal-sheet modal-auth-sheet">
+      <button class="modal-close" onclick="closeModal('adminLoginModal')"><i class="fa-solid fa-xmark"></i></button>
+      <div class="admin-auth-box">
+        <div class="admin-auth-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3>Admin Panelga Kirish</h3>
+        <p>Taomlarni tahrirlash va boshqarish uchun admin parolini kiriting.</p>
+        <div class="auth-input-group">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="adminPasswordInput" placeholder="Parolni kiriting..." onkeyup="if(event.key === 'Enter') submitAdminLogin()">
+        </div>
+        <p class="auth-hint"><i class="fa-solid fa-circle-info"></i> Standart parol: <strong>safia2026</strong></p>
+        <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="submitAdminLogin()">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Tizimga Kirish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Admin Dashboard -->
+  <div class="modal-overlay" id="adminModal" onclick="closeOnOutside(event, 'adminModal')">
+    <div class="modal-sheet modal-admin-sheet">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3><i class="fa-solid fa-sliders"></i> Cafe Safia — Boshqaruv Paneli</h3>
+          <span>Taomlar, narxlar va tushgan buyurtmalar nazorati</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="btn btn-primary" id="btnAdminNewFood" style="padding: 7px 14px; font-size: 13px;" onclick="openNewFoodForm()">
+            <i class="fa-solid fa-plus"></i> Yangi Taom
+          </button>
+          <button class="modal-close" onclick="closeModal('adminModal')"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+      </div>
+
+      <!-- Admin Navigation Tabs -->
+      <div class="admin-nav-tabs">
+        <button class="admin-tab-btn active" id="tabFoodsBtn" onclick="switchAdminTab('foods')">
+          <i class="fa-solid fa-utensils"></i> Taomlar Boshqaruvi
+        </button>
+        <button class="admin-tab-btn" id="tabOrdersBtn" onclick="switchAdminTab('orders')">
+          <i class="fa-solid fa-receipt"></i> Tushgan Buyurtmalar
+          <span class="admin-tab-badge" id="adminOrdersTabBadge">0</span>
+        </button>
+      </div>
+
+      <div class="admin-dashboard-body">
+        <!-- TAB 1: FOODS MANAGEMENT -->
+        <div class="admin-tab-pane active" id="paneFoods">
+          <!-- Stats Row -->
+          <div class="admin-stats-row">
+            <div class="admin-stat-card">
+              <span class="stat-num" id="adminTotalFoods">0</span>
+              <span class="stat-label">Jami Taomlar</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="stat-num" id="adminActiveCats">4</span>
+              <span class="stat-label">Kategoriyalar</span>
+            </div>
+            <div class="admin-stat-card">
+              <span class="stat-num" id="adminTotalOrders">0</span>
+              <span class="stat-label">Jami Buyurtmalar</span>
+            </div>
+          </div>
+
+          <!-- Filter & Search Toolbar -->
+          <div class="admin-toolbar">
+            <div class="admin-search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="adminSearchInput" placeholder="Taomni qidirish..." oninput="filterAdminFoods()">
+            </div>
+            <select id="adminCategoryFilter" onchange="filterAdminFoods()" class="admin-select">
+              <option value="all">Barcha kategoriyalar</option>
+              <option value="fruit-salads">Mevali Salatlar</option>
+              <option value="fast-food">Fast Food</option>
+              <option value="drinks">Ichimliklar</option>
+              <option value="desserts">Shirinliklar</option>
+            </select>
+            <button class="btn btn-outline" style="padding: 7px 12px; font-size: 12px;" onclick="resetMenuToDefault()" title="Boshlang'ich menyuni qaytarish">
+              <i class="fa-solid fa-rotate-left"></i> Menyuni tiklash
+            </button>
+          </div>
+
+          <!-- Foods Table / List -->
+          <div class="admin-food-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Rasm</th>
+                  <th>Taom Nomi</th>
+                  <th>Kategoriya</th>
+                  <th>Narxi</th>
+                  <th>Vaqti</th>
+                  <th style="text-align: right;">Amallar</th>
+                </tr>
+              </thead>
+              <tbody id="adminFoodTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2: LIVE ORDERS MANAGEMENT -->
+        <div class="admin-tab-pane" id="paneOrders" style="display: none;">
+          <div class="orders-pane-header">
+            <div>
+              <h4 style="font-size: 16px; font-weight: 700; color: var(--dark);">Tushgan Jonli Buyurtmalar</h4>
+              <p style="font-size: 12px; color: var(--text-muted);">Real vaqtda mijozlardan yuborilgan yangi buyurtmalar ro'yxati</p>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="clearOrdersHistory()">
+                <i class="fa-solid fa-trash-can"></i> Tarixni tozalash
+              </button>
+              <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="renderAdminOrders()">
+                <i class="fa-solid fa-arrows-rotate"></i> Yangilash
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-orders-list" id="adminOrdersContainer">
+            <!-- Dynamically populated order cards -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Add / Edit Food Form -->
+  <div class="modal-overlay" id="editFoodModal" onclick="closeOnOutside(event, 'editFoodModal')">
+    <div class="modal-sheet modal-form-sheet">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h3 id="editFoodModalTitle"><i class="fa-solid fa-pen-to-square"></i> Taomni Tahrirlash</h3>
+          <span>Kerakli maydonlarni to'ldiring</span>
+        </div>
+        <button class="modal-close" onclick="closeModal('editFoodModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="foodEditForm" onsubmit="saveFoodForm(event)" class="food-form-body">
+        <input type="hidden" id="formFoodId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formFoodName">Taom / Salat Nomi *</label>
+            <input type="text" id="formFoodName" required placeholder="Masalan: Qulupnayli Mevali Salat">
+          </div>
+          <div class="form-group">
+            <label for="formFoodCategory">Kategoriya *</label>
+            <select id="formFoodCategory" required>
+              <option value="fruit-salads">Mevali Salatlar</option>
+              <option value="fast-food">Fast Food & Sneklar</option>
+              <option value="drinks">Ichimliklar & Kofe</option>
+              <option value="desserts">Shirinliklar & Desertlar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formFoodPrice">Narxi (so'm) *</label>
+            <input type="number" id="formFoodPrice" required min="1000" step="500" placeholder="Masalan: 38000">
+          </div>
+          <div class="form-group">
+            <label for="formFoodPrepTime">Tayyorlanish Vaqti</label>
+            <input type="text" id="formFoodPrepTime" placeholder="Masalan: 8-10 daq">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="formFoodImage">Rasm URL Havolasi</label>
+          <input type="url" id="formFoodImage" placeholder="https://images.unsplash.com/...">
+          <small class="form-hint">Internetdagi to'g'ridan-to'g'ri rasm havolasini kiriting</small>
+        </div>
+
+        <div class="form-group">
+          <label for="formFoodDesc">Tavsif (Tarkibi)</label>
+          <textarea id="formFoodDesc" rows="3" placeholder="Masalan: Yangi terilgan qulupnay, banan bo'laklari, qaymoq..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="formFoodVarieties">Xillari / Teglar (vergul bilan)</label>
+            <input type="text" id="formFoodVarieties" placeholder="Qulupnay, Banan, Qaymoq">
+          </div>
+          <div class="form-group">
+            <label for="formFoodBadge">Nishon (Badge)</label>
+            <input type="text" id="formFoodBadge" placeholder="Eng ko'p tanlangan, Xit, Yangi...">
+          </div>
+        </div>
+
+        <div class="form-actions-row">
+          <button type="button" class="btn btn-outline" onclick="closeModal('editFoodModal')">Bekor qilish</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Saqlash</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col brand-col">
+        <div class="brand">
+          <div class="logo-icon"><img src="logo.png" alt="Cafe Safia" class="site-logo-img"></div>
+          <div class="brand-text">
+            <h2>Cafe Safia</h2>
+            <span class="tagline">Lazzat & Shirin Lahzalar</span>
+          </div>
+        </div>
+        <p class="footer-desc">
+          Cafe Safia — eng sara mevali salatlar, shirinliklar, xushbo'y ichimliklar va mazali fast foodlar makoni. QR kod orqali tezkor va qulay xizmat.
+        </p>
+        <div class="social-links">
+          <a href="#" title="Telegram"><i class="fa-brands fa-telegram"></i></a>
+          <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Ish vaqti</h4>
+        <ul class="footer-list">
+          <li><strong>Dushanba - Juma:</strong> 08:30 - 23:00</li>
+          <li><strong>Shanba - Yakshanba:</strong> 09:00 - 00:00</li>
+          <li><span class="status-open"><i class="fa-solid fa-circle"></i> Hozir ochiqmiz</span></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Bog'lanish</h4>
+        <ul class="footer-list">
+          <li><i class="fa-solid fa-location-dot"></i> Toshkent sh., Markaziy xiyobon, 14-uy</li>
+          <li><i class="fa-solid fa-phone"></i> +998 (71) 200-50-50</li>
+          <li><i class="fa-solid fa-envelope"></i> info@cafesafia.uz</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container footer-bottom-inner">
+        <span>&copy; 2026 Cafe Safia. Barcha huquqlar himoyalangan.</span>
+        <span>QR Kodli Smart Kafe Tizimi</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile Native-like Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <button class="m-nav-item active" onclick="navToSection('menuGrid', this)" id="navBtnMenu">
+      <i class="fa-solid fa-utensils"></i>
+      <span>Menyu</span>
+    </button>
+    <button class="m-nav-item" onclick="focusSearch()">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>Qidiruv</span>
+    </button>
+    <button class="m-nav-item" onclick="callWaiterPrompt()">
+      <i class="fa-solid fa-bell-concierge"></i>
+      <span>Ofitsiant</span>
+    </button>
+    <button class="m-nav-item" onclick="openQrModal()">
+      <i class="fa-solid fa-qrcode"></i>
+      <span>QR Menyu</span>
+    </button>
+    <button class="m-nav-item m-nav-cart" onclick="openCartModal()" id="mNavCartBtn">
+      <div class="m-nav-cart-icon-wrap">
+        <i class="fa-solid fa-bag-shopping"></i>
+        <span class="m-nav-badge" id="mNavCartBadge">0</span>
+      </div>
+      <span>Savat</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
